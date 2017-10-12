@@ -1,0 +1,76 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../bower_components/juicy-html/juicy-html.html">
+
+<link rel="import" href="board-data.html">
+<link rel="import" href="board-card.html">
+<link rel="import" href="shared-styles-normalize.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="board-section-shell">
+    <template>
+
+        <style include="shared-styles-normalize shared-styles">
+            :host {
+                display: block;
+                font-size: 20px;
+                box-sizing: border-box;
+            }
+        </style>
+        <board-data data="{{data}}"></board-data>
+
+        <dom-repeat items="{{data}}">
+            <template>
+                <!-- 原則上需要在沒有任何Style的情況下能閱讀的最簡單內容 -->
+                <board-card>
+                    <dom-if if="[[item.title]]">
+                        <template><h1 slot="title">[[item.title]]</h1></template>
+                    </dom-if>
+                    <span slot="day">[[item.postDay]]</span>
+                    <span slot="time">[[item.postTime]]</span>
+                    <span slot="id">[[item.userId]]</span>
+                    <span slot="serial">[[item.serialNumber]]</span>
+                    <br>
+                    <dom-if if="[[item.imgThumbnailUrl]]">
+                        <template>
+                            <img slot="img" src$="[[item.imgThumbnailUrl]]" alt$="[[item.imgUrl]]">
+                        </template>
+                    </dom-if>
+
+                    <p slot="content">
+                        <template is="juicy-html" html="[[item.content]]"></template>
+                    </p>
+                </board-card>
+            </template>
+        </dom-repeat>
+
+    </template>
+
+    <script>
+        class BoardSectionShell extends Polymer.Element {
+            static get is() {
+                return 'board-section-shell';
+            }
+
+            static get properties() {
+                return {
+                    data: Object,
+                }
+            }
+        }
+
+
+        window.customElements.define(BoardSectionShell.is, BoardSectionShell);
+    </script>
+</dom-module>

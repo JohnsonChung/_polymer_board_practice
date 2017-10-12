@@ -1,0 +1,80 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="board-data">
+    <script>
+        let data = [
+            {
+                imgUrl: 'http://i.imgur.com/kgUk3dM.jpg',
+                imgThumbnailUrl: './images/article_hero_image.png',
+                content: '多大手都出圖準備在C93出支那艦隊的同人本了,你難度想要看本本的時候不知道這是誰?<br>想像一下,今天的C93冬天,別人在溫暖的房間內,在柔和的燈光下,準備好r20,開著遊戲,一邊聽著美妙的CV,配著同人本爽,又是一個平安的夜<br>你呢?在冰冷的冬天,看著熟悉的大手出著不熟悉的角色,你的雞雞認不出角色,在低溫中卻硬不起來,你心身都冰冷了,不知道用還是不用,最終在殘酷的風雪中因失溫而死<br>難度這就是你想的未來嗎!!!',
+                userId: 'SWsdJqKJz',
+                title: '今年的冬天你想要怎樣過?',
+                postDay: '2017/10/12',
+                postTime: '16:45:57',
+                serialNumber: 10041868,
+
+            },
+            {
+                imgThumbnailUrl: './images/article_secondary_image.png',
+                content: '今年是暖冬<br>到過年都不會有低溫',
+                userId: 'No3EhSedc',
+                postDay: '2017/10/12',
+                postTime: '16:49:07',
+                serialNumber: 10041893,
+            },
+            {
+                content: '艦豚連話都講不好',
+                userId: 'No3EhSedc',
+                postDay: '2017/10/12',
+                postTime: '16:49:08',
+                serialNumber: 10041918,
+            },
+            {
+                content: '幹你娘支那艦畜能玩這遊戲超過一個月再來講啦',
+                userId: '.dfJ/SGUs',
+                postDay: '2017/10/12',
+                postTime: '16:49:43',
+                serialNumber: 10041923,
+            },
+            {
+                content: '難度三小<br>是有多難啦',
+                userId: 'GGl0kcd3U',
+                postDay: '2017/10/12',
+                postTime: '16:50:54',
+                serialNumber: 10041925,
+            }
+
+        ]
+        class BoardData extends Polymer.Element {
+            static get is() {
+                return 'board-data';
+            }
+
+            static get properties() {
+                return {
+                    data: {
+                        type: Object,
+                        notify: true,
+                        value() {
+                            return data;
+                        }
+                    }
+                }
+
+            }
+        }
+
+        window.customElements.define(BoardData.is, BoardData);
+    </script>
+</dom-module>

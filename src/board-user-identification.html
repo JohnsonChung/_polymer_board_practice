@@ -1,0 +1,92 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link href="https://fonts.googleapis.com/css?family=Nova+Mono" rel="stylesheet">
+
+<dom-module id="board-user-identification">
+    <template>
+        <style>
+            :host {
+                display: inline-block;
+                font-family: 'Nova Mono', monospace;
+            }
+
+            #firstLetter {
+                font-size: 20px;
+                line-height: 20px;
+            }
+
+            #attachedLetters {
+                display: inline-block;
+                font-size: 10px;
+                line-height: 8px;
+                width: 28px;
+                white-space: pre-wrap; /* css-3 */
+                white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+                word-wrap: break-word; /* Internet Explorer 5.5+ */
+            }
+        </style>
+        <slot></slot>
+        <span id="firstLetter">[[firstLetter]]</span><!--
+        --><span id="attachedLetters">[[attachedLetters]]</span>
+    </template>
+    <script>
+        class BoardUserIdentification extends Polymer.Element {
+            static get is() {
+                return 'board-user-identification';
+            }
+
+            static get properties() {
+                return {
+                    userIdentification: {
+                        type: String,
+                        reflectToAttribute: true,
+                        value() {
+
+                        }
+                    }
+                }
+            }
+
+            ready() {
+                super.ready();
+                let slot = this.shadowRoot.querySelector('slot');
+                let id = "";
+                slot.addEventListener('slotchange', e => {
+                    if (e.target.name === "id") {
+                        id = e.target.assignedNodes()[0].innerHTML;
+                        if (!id) return;
+                        this.id = id;
+                        this.firstLetter = id[0];
+                        this.attachedLetters = id.slice(1);
+                        this.shadowRoot.querySelector('slot').remove();
+                    }
+
+//                    not Work !? trying to use attachShadow to create HTML node inside Template
+//                    const shadowRoot = this.attachShadow({mode: 'open'});
+//                    let HTML =
+//                        '<span id="firstLetter">' + this.firstLetter + '</span>'
+//                        '<span id="attachedLetters">' + this.attachedLetters + '</span>';
+//                    shadowRoot.innerHTML = HTML;
+
+
+                });
+
+
+            }
+
+
+        }
+
+        window.customElements.define(BoardUserIdentification.is, BoardUserIdentification);
+    </script>
+</dom-module>
+
