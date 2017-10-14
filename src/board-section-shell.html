@@ -11,47 +11,79 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/polymer/lib/elements/dom-if.html">
 <link rel="import" href="../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/juicy-html/juicy-html.html">
 
 <link rel="import" href="board-data.html">
 <link rel="import" href="board-card.html">
+<link rel="import" href="board-stick-manage-bar.html">
+
 <link rel="import" href="shared-styles-normalize.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="board-section-shell">
     <template>
 
-        <style include="shared-styles-normalize shared-styles">
+        <style include="shared-styles-normalize shared-styles iron-flex">
             :host {
-                display: block;
+                @apply(--layout-vertical);
                 font-size: 20px;
                 box-sizing: border-box;
+                background-color: var(--komica-background-color);
+            }
+            #article {
+                padding-bottom: 40px;
+            }
+            @media (max-width: 650px) {
+                img {
+                    width: 100%;
+                }
             }
         </style>
         <board-data data="{{data}}"></board-data>
 
-        <dom-repeat items="{{data}}">
+        <dom-repeat items="{{data}}" as="article">
             <template>
-                <!-- 原則上需要在沒有任何Style的情況下能閱讀的最簡單內容 -->
-                <board-card>
-                    <dom-if if="[[item.title]]">
-                        <template><h1 slot="title">[[item.title]]</h1></template>
-                    </dom-if>
-                    <span slot="day">[[item.postDay]]</span>
-                    <span slot="time">[[item.postTime]]</span>
-                    <span slot="id">[[item.userId]]</span>
-                    <span slot="serial">[[item.serialNumber]]</span>
-                    <br>
-                    <dom-if if="[[item.imgThumbnailUrl]]">
+                <div id="article">
+                    <dom-repeat items="{{article}}" as="section">
                         <template>
-                            <img slot="img" src$="[[item.imgThumbnailUrl]]" alt$="[[item.imgUrl]]">
-                        </template>
-                    </dom-if>
+                            <!-- 原則上需要在沒有任何Style的情況下能閱讀的最簡單內容 -->
 
-                    <p slot="content">
-                        <template is="juicy-html" html="[[item.content]]"></template>
-                    </p>
-                </board-card>
+                            <board-card index$="[[index]]">
+                                <!-- Title -->
+                                <dom-if if="[[section.title]]">
+                                    <template><h1 slot="title">[[section.title]]</h1></template>
+                                </dom-if>
+
+                                <!-- Info -->
+                                <span slot="day">[[section.postDay]]</span>
+                                <span slot="time">[[section.postTime]]</span>
+                                <span slot="id">[[section.userId]]</span>
+                                <span slot="serial">[[section.serialNumber]]</span>
+                                <br>
+                                <board-stick-manage-bar
+                                        serial-number="[[section.serialNumber]]"
+                                        post-length="[[section.postLength]]"
+                                        media-type="[[section.mediaType]]"
+                                        media-host="[[section.mediaHost]]">
+                                </board-stick-manage-bar>
+                                <!-- media -->
+                                <dom-if if="[[section.imgThumbnailUrl]]">
+                                    <template>
+                                        <a slot="img" href="" id="imageAnchor">
+                                            <img src$="[[section.imgThumbnailUrl]]" alt$="[[section.imgUrl]]">
+                                        </a>
+                                    </template>
+                                </dom-if>
+
+                                <!-- article -->
+                                <p slot="content">
+                                    <template is="juicy-html" html="[[section.content]]"></template>
+                                </p>
+                            </board-card>
+                        </template>
+                    </dom-repeat>
+                </div>
             </template>
         </dom-repeat>
 
@@ -66,7 +98,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             static get properties() {
                 return {
                     data: Object,
-                }
+                };
             }
         }
 

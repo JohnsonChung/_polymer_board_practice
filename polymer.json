@@ -3,7 +3,7 @@
   "shell": "src/my-app.html",
   "fragments": [
     "src/board-section-shell.html",
-    "src/my-view404.html"
+    "src/board-view404.html"
   ],
   "sources": [
     "src/**/*",

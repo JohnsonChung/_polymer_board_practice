@@ -1,0 +1,87 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="board-stick-manage-bar">
+  <template>
+    <style include="shared-styles iron-flex">
+      :host {
+        position: absolute;
+        top: 0;
+        left: -20px;
+        --komica-dark-label: {
+          background-color: var(--komica-text-color);
+          color: var(--komica-background-color);
+        }
+        --vertical-label: {
+          writing-mode: vertical-rl;
+          padding: 3px 0;
+        }
+      }
+
+      #container{
+        @apply(--layout-vertical);
+        width: 20px;
+      }
+      #container > div {
+        font-size: 10px;
+        line-height: 20px;
+        text-align: center;
+        background-color: var(--komica-primary-color);
+      }
+
+      div#postLength {
+        width: 40px;
+        height: 40px;
+        margin-left: -20px;
+        font-size: 20px;
+        line-height: 40px;
+        background-color: var(--komica-orange);
+      }
+      div#serialAnchor {
+      }
+      div#mediaType {
+        background-color: var(--komica-primary-color);
+        @apply(--komica-dark-label);
+      }
+      div#mediaHost {
+        @apply(--vertical-label);
+      }
+
+    </style>
+
+    <div id="container">
+      <template is="dom-if" if="[[postLength]]"><div id="postLength">[[postLength]]</div></template>
+      <template is="dom-if" if="[[serialNumber]]"><div id="serialAnchor" href$="[[serialNumber]]"><a href="[[rootPath]]">#</a></div></template>
+      <template is="dom-if" if="[[mediaType]]"><div id="mediaType">[[mediaType]]</div></template>
+      <template is="dom-if" if="[[mediaHost]]"><div id="mediaHost">[[mediaHost]]</div></template>
+    </div>
+
+  </template>
+
+  <script>
+    class BoardStickManageBar extends Polymer.Element {
+      static get is() { return 'board-stick-manage-bar'; }
+      static get properties() {
+          return {
+              postLength: String,
+              serialNumber: String,
+              mediaType: String,
+              mediaHost: String
+          }
+      }
+    }
+
+    window.customElements.define(BoardStickManageBar.is, BoardStickManageBar);
+  </script>
+</dom-module>

@@ -1,0 +1,131 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/juicy-html/juicy-html.html">
+
+<link rel="import" href="board-data.html">
+<link rel="import" href="board-card.html">
+<link rel="import" href="board-stick-manage-bar.html">
+
+<link rel="import" href="shared-styles-normalize.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="board-list-shell">
+    <template>
+
+        <style include="shared-styles-normalize shared-styles iron-flex">
+            :host {
+                @apply(--layout-vertical);
+                box-sizing: border-box;
+                background-color: var(--komica-background-color);
+            }
+            #article {
+            }
+            #album {
+                @apply(--layout-horizontal);
+                @apply(--layout-wrap);
+                max-width: 100%;
+                margin-bottom: 10px;
+                margin-left: 40px;
+            }
+            #album iron-image {
+                width: 60px;
+                height: 60px;
+            }
+            #album iron-image:first-child {
+            }
+            board-card  {
+                margin-bottom: 0;
+            }
+            board-card h1 {
+                font-size: 15px !important;
+            }
+            board-card p {
+                font-size: 12px;
+            }
+            board-card span {
+                /*font-size: 12px;*/
+            }
+            board-card img {
+                max-height: 100px;
+                max-width: 100px;
+            }
+        </style>
+        <board-data data="{{data}}"></board-data>
+
+        <dom-repeat items="{{data}}" as="article" index-as="i">
+            <template>
+                <div id="article">
+                    <board-card>
+                        <!-- Title -->
+                        <template is="dom-if" if="[[section.title]]">
+                            <h1 slot="title">[[section.title]]</h1>
+                        </template>
+
+                        <!-- Info -->
+                        <span slot="day">[[article.0.postDay]]</span>
+                        <span slot="time">[[article.0.postTime]]</span>
+                        <span slot="id">[[article.0.userId]]</span>
+                        <span slot="serial">[[article.0.serialNumber]]</span>
+                        <br>
+                        <board-stick-manage-bar
+                                serial-number="[[article.0.serialNumber]]"
+                                post-length="[[article.0.postLength]]"
+                                media-type="[[article.0.mediaType]]"
+                                media-host="[[article.0.mediaHost]]">
+                        </board-stick-manage-bar>
+
+                        <!-- article -->
+                        <p slot="content">
+                            <template is="juicy-html" html="[[article.0.content]]"></template>
+                        </p>
+                    </board-card>
+                </div>
+
+                <div id="album" >
+                    <dom-repeat items="{{article}}" as="section" filter="_hasImgThumb">
+                        <template>
+                            <iron-image src="{{section.imgThumbnailUrl}}" alt="{{section.imgThumbnailUrl}}" sizing="cover" preload fade></iron-image>
+                        </template>
+                    </dom-repeat>
+                </div>
+            </template>
+        </dom-repeat>
+
+    </template>
+
+    <script>
+        class BoardListShell extends Polymer.Element {
+            static get is() {
+                return 'board-list-shell';
+            }
+
+            static get properties() {
+                return {
+                    data: Object,
+                };
+            }
+            _firstPostOnly(item, index, array) {
+                return index === 0;
+            }
+            _hasImgThumb(item, index) {
+                if(item.imgThumbnailUrl) return true;
+            }
+        }
+
+
+        window.customElements.define(BoardListShell.is, BoardListShell);
+    </script>
+</dom-module>

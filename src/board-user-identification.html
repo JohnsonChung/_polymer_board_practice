@@ -50,7 +50,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         type: String,
                         reflectToAttribute: true,
                         value() {
-
                         }
                     }
                 }
@@ -58,32 +57,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             ready() {
                 super.ready();
+                this._generateIDPattern();
+            }
+
+            _generateIDPattern() {
                 let slot = this.shadowRoot.querySelector('slot');
-                let id = "";
                 slot.addEventListener('slotchange', e => {
                     if (e.target.name === "id") {
-                        id = e.target.assignedNodes()[0].innerHTML;
-                        if (!id) return;
-                        this.id = id;
-                        this.firstLetter = id[0];
-                        this.attachedLetters = id.slice(1);
-                        this.shadowRoot.querySelector('slot').remove();
+                        this.id = e.target.assignedNodes()[0].innerHTML;
+                        if (!this.id) return;
+                        this.firstLetter = this.id[0];
+                        this.attachedLetters = this.id.slice(1);
+                        slot.remove();
                     }
+                });
+            }
 
+            _generateIDDOM() {
+//                    possible to use templize function to generate shadow root
 //                    not Work !? trying to use attachShadow to create HTML node inside Template
-//                    const shadowRoot = this.attachShadow({mode: 'open'});
 //                    let HTML =
 //                        '<span id="firstLetter">' + this.firstLetter + '</span>'
 //                        '<span id="attachedLetters">' + this.attachedLetters + '</span>';
-//                    shadowRoot.innerHTML = HTML;
-
-
-                });
-
-
+//                    this.shadowRoot.innerHTML = HTML;
             }
-
-
         }
 
         window.customElements.define(BoardUserIdentification.is, BoardUserIdentification);
