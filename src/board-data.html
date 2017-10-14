@@ -169,48 +169,44 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.push('data', src);
             }
 
-        /**
-         * Public
-         * */
-        initialization: function() {
-            var ajax = this.$.ajax;
-            this.page = 0;
-            ajax.url = "http://johnson.test:4300/";
-            ajax.params = {page: this.page};
-            ajax.generateRequest();
-        },
-        requestNextPage: function() {
-            var ajax = this.$.ajax;
-            this.page++;
-            ajax.params = {page: this.page};
-            ajax.generateRequest();
-        },
-        /**
-         * Private
-         * */
-        _handleResponse: function(e) {
-            var newData = this.$.ajax.lastResponse;
-            var oldData = this.data;
-            // cache previous data
-            this.previousData = this.data;
-            // bind index
-            newData.forEach(function(el, index){
-                el['index']= _.uniqueId();
-            });
-            var diffData = _.differenceBy( newData, oldData, 'serial');
-            this._injectData(diffData, oldData);
-        },
-        _injectData: function(diffData, oldData) {
-            for(var i = 1; i < diffData.length; i++) {
-                this.push('data', diffData[i]);
+            /**
+             * Public
+             * */
+            initialization() {
+                this.ajax = this.shadowRoot.querySelector('#ajax');
+                this.page = 0;
+                this.ajax.url = "http://192.168.2.108:4300/";
+                this.ajax.params = {page: this.page};
+                this.ajax.generateRequest();
             }
-        },
-        /**
-         * Live
-         * */
-        ready: function() {
-            this.initialization();
-        }
+            requestNextPage() {
+                this.ajax;
+                this.page++;
+                this.ajax.params = {page: this.page};
+                this.ajax.generateRequest();
+            }
+            /**
+             * Private
+             * */
+            _handleResponse(e) {
+                var newData = this.ajax.lastResponse;
+                var oldData = this.data;
+                // cache previous data
+                this.previousData = this.data;
+                this._injectData(newData, oldData);
+            }
+            _injectData(diffData, oldData) {
+                for(var i = 1; i < diffData.length; i++) {
+                    this.push('data', diffData[i]);
+                }
+            }
+            /**
+             * Live
+             * */
+            ready() {
+                super.ready();
+                this.initialization();
+            }
 
         }
 
