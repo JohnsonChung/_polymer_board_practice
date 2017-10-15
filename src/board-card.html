@@ -21,6 +21,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 display: block;
                 position: relative;
                 color: var(--board-post-text-color);
+                border: var(--board-firstpost-border);
+                background-color: var(--board-firstpost-background);
                 max-width: 100%;
                 margin: 0 40px 5px;
                 box-sizing: border-box;
@@ -33,6 +35,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 box-sizing: border-box;
             }
             :host(:not([index="0"])) {
+                border: var(--board-post-border);
                 background-color: var(--board-post-background);
             }
 

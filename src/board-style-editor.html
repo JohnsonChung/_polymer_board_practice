@@ -11,40 +11,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="board-section-shell.html">
 <link rel="import" href="shared-styles.html">
-<link rel="import" href="shared-default-board-theme.html">
 
 <dom-module id="board-style-editor">
     <template>
         <style include="shared-styles">
             :host {
+                position: relative;
                 display: block;
-            }
-
-            div#container {
-                background: var(--board-post-background);
-                border: var(--board-post-border);
-                outline: 1px solid var(--komica-green);
-            }
-            p {
-                color: var(--board-post-text-color);
             }
             board-section-shell {
                 position: fixed;
-                right: 10px;
-                top: 50%;
-                transform: translateY(-390px);
-                height: 780px;
+                right: 0;
+                height: calc(100vh - 80px);
                 width: 480px;
                 overflow-y: scroll;
+            }
+            @media (max-width: 640px) {
+                board-section-shell {
+                    width: 100vw;
+                    height: 100vh;
+                    transform-origin: right bottom;
+                    transform: scale(0.4, 0.4);
+                    right: 0;
+                    bottom: 0;
+                }
             }
         </style>
 
         <!-- default styles 應該放在獨立的 style.html 裡面 -->
-        <board-section-shell></board-section-shell>
-        <div id="container">
-            <h1>Title</h1>
-            <p>Content Text.</p>
-        </div>
+        <board-section-shell id="preview"></board-section-shell>
     </template>
 
     <script>
@@ -86,12 +81,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this._gatherThemeVariables();
             }
 
-            /* 利用 Polymer.styleGather 由 import 取得 stylesheet 裡的 theme */
+            /* 利用 index.html Polymer.globalCustomStyle 取得 stylesheet 裡的 theme */
             _gatherThemeVariables() {
                 // Gather Styles variable from Theme's dom-module
                 // Output [[style, value],[],...]
                 let theme = String;
-                theme = Polymer.StyleGather.cssFromModule('shared-default-board-theme');
+                theme = Polymer.globalCustomStyle.getStyle().outerText;
 
                 let variablesRegexp = /(--[\w-]*)\s*:\s*([^;]*)/g;
 
