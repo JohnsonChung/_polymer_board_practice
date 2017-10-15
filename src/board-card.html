@@ -13,15 +13,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="board-user-identification.html">
 
 <link rel="import" href="shared-styles.html">
-<link rel="import" href="shared-default-board-theme.html">
 
 <dom-module id="board-card">
     <template>
-        <style include="shared-default-board-theme shared-styles">
+        <style include="shared-styles">
             :host {
                 display: block;
                 position: relative;
-                color: var(--komica-text-color);
+                color: var(--board-post-text-color);
                 max-width: 100%;
                 margin: 0 40px 5px;
                 box-sizing: border-box;
@@ -34,7 +33,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 box-sizing: border-box;
             }
             :host(:not([index="0"])) {
-                background-color: var(--komica-primary-color);
+                background-color: var(--board-post-background);
             }
 
             [name="title"]::slotted(h1) {

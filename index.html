@@ -90,6 +90,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <!-- Load your application shell -->
     <link rel="import" href="src/my-app.html">
 
+    <!-- Load custom-style for global styling -->
+    <link rel="import" href="bower_components/polymer/lib/elements/custom-style.html">
+
     <!-- Add any global styles for body, document, etc. -->
     <style>
       body {
@@ -100,6 +103,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         background-color: #FFE;
       }
     </style>
+
+    <!-- Global style variables, equal to the shared-default-board-theme.html -->
+    <custom-style>
+      <style>
+        html  {
+          --komica-background-color: #FFE;
+          --komica-primary-color: #F0E0D6;
+          --komica-text-color: #800000;
+          --komica-white: #FEFEFE;
+          --komica-orange: #EA8;
+          --komica-blue: #00E;
+          --komica-red: #CC1105;
+          --komica-green: #117743;
+
+          --board-global-background: var(--komica-background-color);
+          --board-global-title-color: var(--komica-text-color);
+          --board-global-color: var(--komica-text-color);
+
+          --board-global-h1-color: var(--komica-red);
+          --board-global-id-color: inherit;
+          --board-global-serial-color: var(--komica-blue);
+          --board-global-text-color: var(--komica-text-color);
+
+          --board-firstpost-background: none;
+          --board-firstpost-color: inherit;
+
+          --board-post-background: var(--komica-primary-color);
+          --board-post-text-color: var(--komica-text-color);
+          --board-post-border: none;
+
+          --board-push-color: inherit;
+          --board-push-background: var(--komica-white);
+          --board-push-border: none;
+        }
+      </style>
+    </custom-style>
   </head>
   <body>
     <my-app></my-app>

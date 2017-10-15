@@ -14,7 +14,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="board-style-editor">
     <template>
-        <style include="shared-default-board-theme shared-styles">
+        <style include="shared-styles">
             :host {
                 display: block;
             }
@@ -23,6 +23,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 background: var(--board-post-background);
                 border: var(--board-post-border);
                 outline: 1px solid var(--komica-green);
+            }
+            p {
+                color: var(--board-post-text-color);
             }
         </style>
 
@@ -114,7 +117,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             _styleMutation(prop, value) {
-                this.updateStyles({[prop]: value});
+                Polymer.updateStyles({[prop]: value});
             }
 
             /**
