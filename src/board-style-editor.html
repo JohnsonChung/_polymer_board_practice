@@ -1,0 +1,192 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="shared-default-board-theme.html">
+
+<dom-module id="board-style-editor">
+    <template>
+        <style include="shared-default-board-theme shared-styles">
+            :host {
+                display: block;
+            }
+
+            div#container {
+                background: var(--board-post-background);
+                border: var(--board-post-border);
+                outline: 1px solid var(--komica-green);
+            }
+        </style>
+
+        <!-- default styles 應該放在獨立的 style.html 裡面 -->
+        <div id="container">
+            <h1>Title</h1>
+            <p>Content Text.</p>
+        </div>
+    </template>
+
+    <script>
+        /* 連結 stylesheet 和 input */
+        class BoardStyleEditor extends Polymer.Element {
+            static get is() {
+                return 'board-style-editor';
+            }
+
+            static get properties() {
+                return {
+                    // Can't use property 'style' will cause this.customStyle({}) fail;
+                    styles: {
+                        type: Object,
+                        value() {
+                            return {};
+                        },
+                    },
+                    themeVariables: {
+                        type: Array,
+                        observer: '_generateDOMbyThemeVariables',
+                        value() {
+                            return [];
+                        },
+                    },
+                    editedVariables: {
+                        type: Array,
+                    },
+                };
+            }
+
+            /* 取得編輯後的新 theme text */
+            getEditedTheme() {
+                console.log(this.editedVariables);
+            }
+
+            ready() {
+                super.ready();
+                this._gatherThemeVariables();
+            }
+
+            /* 利用 Polymer.styleGather 由 import 取得 stylesheet 裡的 theme */
+            _gatherThemeVariables() {
+                // Gather Styles variable from Theme's dom-module
+                // Output [[style, value],[],...]
+                let theme = String;
+                theme = Polymer.StyleGather.cssFromModule('shared-default-board-theme');
+
+                let variablesRegexp = /(--[\w-]*)\s*:\s*([^;]*)/g;
+
+                let properties = this._getMatches(theme, variablesRegexp, 1);
+                let values = this._getMatches(theme, variablesRegexp, 2);
+
+                let themeVariables = [];
+                for (let i = 0; i < properties.length; i++) {
+                    themeVariables.push({'property': properties[i], 'value': values[i]});
+                }
+
+                this.themeVariables = themeVariables;
+            }
+
+            /* 依照 theme 內的 --css-variable 產生相對應的 html input */
+            _generateDOMbyThemeVariables() {
+                let theme = this.themeVariables;
+                let dom = theme.map(x => {
+                    let input =
+                        `<div>
+                            <label for="${x.property}">${x.property}</label>
+                            <input name="${x.property}" value="${x.value}" type="input">
+                        </div>`;
+                    return input;
+                });
+                this.shadowRoot.innerHTML += dom.join('');
+
+                // bind events
+                this.shadowRoot.querySelectorAll('input').forEach(x => {
+                    x.addEventListener('change', e => {
+                        this._onStyleChanged(e)
+                    });
+                });
+            }
+
+            _styleMutation(prop, value) {
+                this.updateStyles({[prop]: value});
+            }
+
+            /**
+             * Events
+             */
+
+            _onStyleChanged(e) {
+                // clone variables
+                if (!this.editedVariables) this.editedVariables = this._cloneObject(this.themeVariables);
+
+                let targetObj = this.editedVariables.find(x => x.property === e.target.name);
+
+                targetObj.value = e.target.value;
+                this._styleMutation(e.target.name, e.target.value);
+            }
+
+            /**
+             * Utilities
+             */
+
+            /* How do you access the matched groups in a JavaScript regular expression?
+             * https://stackoverflow.com/a/14210948/8546518
+             */
+
+            _getMatches(string, regex, index) {
+                index || (index = 1); // default to the first capturing group
+                var matches = [];
+                var match;
+                while (match = regex.exec(string)) {
+                    matches.push(match[index]);
+                }
+                return matches;
+            }
+
+            /* How do I correctly clone a JavaScript object?
+             * https://stackoverflow.com/a/728694/8546518
+             */
+            _cloneObject(obj) {
+                var copy;
+
+                // Handle the 3 simple types, and null or undefined
+                if (null == obj || "object" != typeof obj) return obj;
+
+                // Handle Date
+                if (obj instanceof Date) {
+                    copy = new Date();
+                    copy.setTime(obj.getTime());
+                    return copy;
+                }
+
+                // Handle Array
+                if (obj instanceof Array) {
+                    copy = [];
+                    for (var i = 0, len = obj.length; i < len; i++) {
+                        copy[i] = this._cloneObject(obj[i]);
+                    }
+                    return copy;
+                }
+
+                // Handle Object
+                if (obj instanceof Object) {
+                    copy = {};
+                    for (var attr in obj) {
+                        if (obj.hasOwnProperty(attr)) copy[attr] = this._cloneObject(obj[attr]);
+                    }
+                    return copy;
+                }
+
+                throw new Error("Unable to copy obj! Its type isn't supported.");
+            }
+        }
+
+        window.customElements.define(BoardStyleEditor.is, BoardStyleEditor);
+    </script>
+</dom-module>

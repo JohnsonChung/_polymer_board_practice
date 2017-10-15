@@ -86,7 +86,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </div>
             </template>
         </dom-repeat>
-
     </template>
 
     <script>
@@ -99,6 +98,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 return {
                     data: Object,
                 };
+            }
+            ready() {
+                super.ready();
             }
         }
 
