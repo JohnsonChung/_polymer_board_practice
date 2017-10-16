@@ -24,7 +24,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         ></iron-ajax>
     </template>
     <script>
-        let dummyData = [
+        let dummyData =
             [{
                 imgUrl: 'http://i.imgur.com/kgUk3dM.jpg',
                 imgThumbnailUrl: './images/article_hero_image.png',
@@ -37,6 +37,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 postTime: '16:45:57',
                 postLength: '5',
                 serialNumber: 10041868,
+                firstPostSerialNumber: 10041868,
+                type: 'post',
+                isFirstPost: true,
             },
                 {
                     imgThumbnailUrl: './images/article_secondary_image.png',
@@ -47,6 +50,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     postDay: '2017/10/12',
                     postTime: '16:49:07',
                     serialNumber: 10041893,
+                    firstPostSerialNumber: 10041868,
+                    type: 'reply',
+
                 },
                 {
                     content: '艦豚連話都講不好',
@@ -54,6 +60,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     postDay: '2017/10/12',
                     postTime: '16:49:08',
                     serialNumber: 10041918,
+                    firstPostSerialNumber: 10041868,
+                    type: 'reply',
                 },
                 {
                     content: '幹你娘支那艦畜能玩這遊戲超過一個月再來講啦',
@@ -61,6 +69,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     postDay: '2017/10/12',
                     postTime: '16:49:43',
                     serialNumber: 10041923,
+                    firstPostSerialNumber: 10041868,
+                    type: 'reply',
                 },
                 {
                     content: '難度三小<br>是有多難啦',
@@ -68,26 +78,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     postDay: '2017/10/12',
                     postTime: '16:50:54',
                     serialNumber: 10041925,
-                }],
-            [{
-                imgUrl: 'http://i.imgur.com/kgUk3dM.jpg',
-                imgThumbnailUrl: './images/article_hero_image_2.png',
-                mediaType: 'jpg',
-                mediaHost: 'imgur',
-                content: '我很好奇<br>難道1、2千年來人類的進程註定會往科學發展嗎?<br>沒有別種可能?',
-                userId: 'SWsdJqKJz',
-                title: '無標題',
-                postDay: '2017/10/12',
-                postTime: '16:45:57',
-                postLength: '5',
-                serialNumber: 10041868,
-            },
+                    firstPostSerialNumber: 10041868,
+                    type: 'reply',
+                },
+                {
+                    imgUrl: 'http://i.imgur.com/kgUk3dM.jpg',
+                    imgThumbnailUrl: './images/article_hero_image_2.png',
+                    mediaType: 'jpg',
+                    mediaHost: 'imgur',
+                    content: '我很好奇<br>難道1、2千年來人類的進程註定會往科學發展嗎?<br>沒有別種可能?',
+                    userId: 'SWsdJqKJz',
+                    title: '無標題',
+                    postDay: '2017/10/12',
+                    postTime: '16:45:57',
+                    postLength: '5',
+                    serialNumber: 10041878,
+                    firstPostSerialNumber: 10041878,
+                    type: 'post',
+                    isFirstPost: true,
+                },
                 {
                     content: '今年是暖冬<br>到過年都不會有低溫',
                     userId: 'No3EhSedc',
                     postDay: '2017/10/12',
                     postTime: '16:49:07',
                     serialNumber: 10041893,
+                    firstPostSerialNumber: 10041878,
+                    type: 'reply',
                 },
                 {
                     imgThumbnailUrl: './images/article_secondary_image_2.png',
@@ -98,6 +115,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     postDay: '2017/10/12',
                     postTime: '16:49:08',
                     serialNumber: 10041918,
+                    firstPostSerialNumber: 10041878,
+                    type: 'reply',
                 },
                 {
                     content: '幹你娘支那艦畜能玩這遊戲超過一個月再來講啦',
@@ -105,6 +124,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     postDay: '2017/10/12',
                     postTime: '16:49:43',
                     serialNumber: 10041923,
+                    firstPostSerialNumber: 10041878,
+                    type: 'reply',
                 },
                 {
                     content: '難度三小<br>是有多難啦',
@@ -112,10 +133,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     postDay: '2017/10/12',
                     postTime: '16:50:54',
                     serialNumber: 10041925,
-
-                }]
-
-        ]
+                    firstPostSerialNumber: 10041878,
+                    type: 'reply',
+                }];
         class BoardData extends Polymer.Element {
             static get is() {
                 return 'board-data';
@@ -149,14 +169,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     },
                 };
             }
+
             _gernerateDummyData() {
                 // temp
-                if(this.dummyData[2]) return;
+                if (this.dummyData[2]) return;
                 let numbers = Array.from(Array(13).keys());
-                let n = numbers.map( x => {
-                    if( x < 10 ) { return "00" + x} else if ( x < 100) { return "0" + x } else { return x };
+                let n = numbers.map(x => {
+                    if (x < 10) {
+                        return "00" + x
+                    } else if (x < 100) {
+                        return "0" + x
+                    } else {
+                        return x
+                    }
+                    ;
                 });
-                let src = n.map( x => {
+                let src = n.map(x => {
                     return {
                         content: '無內文',
                         userId: 'XXXXXXXXX',
@@ -183,12 +211,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.ajax.params = {page: this.page};
                 this.ajax.generateRequest();
             }
+
             requestNextPage() {
                 this.ajax;
                 this.page++;
                 this.ajax.params = {page: this.page};
                 this.ajax.generateRequest();
             }
+
             /**
              * Private
              * */
@@ -199,11 +229,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.previousData = this.data;
                 this._injectData(newData, oldData);
             }
+
             _injectData(diffData, oldData) {
-                for(var i = 1; i < diffData.length; i++) {
+                for (var i = 1; i < diffData.length; i++) {
                     this.push('data', diffData[i]);
                 }
             }
+
             /**
              * Live
              * */

@@ -11,6 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/polymer/lib/elements/dom-if.html">
 <link rel="import" href="../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/juicy-html/juicy-html.html">
 
@@ -29,63 +30,99 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 @apply(--layout-vertical);
                 font-size: 20px;
                 box-sizing: border-box;
+
+                /* bg */
                 background-color: var(--board-global-background);
+                background-image: var(--board-global-background-image);
+                background-origin: var(--board-global-background-origin);
+                background-position: var(--board-global-background-position);
+                background-attachment: var(--board-global-background-attachment);
+                background-repeat: var(--board-global-background-repeat);
+                background-size: var(--board-global-background-size);
+
+                color: var(--board-global-text-color);
+                transition: 1s all 0.5s ease;
             }
-            #article {
-                padding-bottom: 40px;
+
+            #container {
+                width: 100%;
+                /* bg */
+                background-image: var(--board-container-background-image);
+                background-origin: var(--board-container-background-origin);
+                background-position: var(--board-container-background-position);
+                background-attachment: var(--board-container-background-attachment);
+                background-repeat: var(--board-container-background-repeat);
+                background-size: var(--board-container-background-size);
             }
+            #dialog {
+                bottom: 0px;
+                min-width: 180px;
+                max-width: calc(100% - 10px);
+            }
+
             @media (max-width: 650px) {
                 img {
                     width: 100%;
                 }
             }
         </style>
+
+
+
+
+
         <board-data dummy-data="{{data}}"></board-data>
-
-        <dom-repeat items="{{data}}" as="article">
-            <template>
-                <div id="article">
-                    <dom-repeat items="{{article}}" as="section">
-                        <template>
-                            <!-- 原則上需要在沒有任何Style的情況下能閱讀的最簡單內容 -->
-
-                            <board-card index$="[[index]]">
-                                <!-- Title -->
-                                <dom-if if="[[section.title]]">
-                                    <template><h1 slot="title">[[section.title]]</h1></template>
-                                </dom-if>
-
-                                <!-- Info -->
-                                <span slot="day">[[section.postDay]]</span>
-                                <span slot="time">[[section.postTime]]</span>
-                                <span slot="id">[[section.userId]]</span>
-                                <span slot="serial">[[section.serialNumber]]</span>
-                                <br>
-                                <board-stick-manage-bar
-                                        serial-number="[[section.serialNumber]]"
-                                        post-length="[[section.postLength]]"
-                                        media-type="[[section.mediaType]]"
-                                        media-host="[[section.mediaHost]]">
-                                </board-stick-manage-bar>
-                                <!-- media -->
-                                <dom-if if="[[section.imgThumbnailUrl]]">
-                                    <template>
-                                        <a slot="img" href="" id="imageAnchor">
-                                            <img src$="[[section.imgThumbnailUrl]]" alt$="[[section.imgUrl]]">
-                                        </a>
-                                    </template>
-                                </dom-if>
-
-                                <!-- article -->
-                                <p slot="content">
-                                    <template is="juicy-html" html="[[section.content]]"></template>
-                                </p>
-                            </board-card>
-                        </template>
-                    </dom-repeat>
+        <div id="container">
+            <paper-dialog id="dialog">
+                <h2>Dialog Title</h2>
+                <p>Lorem iorem iorem iorem iorem iorem iorem iorem iorem iorem iorem iorem iorem iorem ipsum</p>
+                <div class="buttons">
+                    <button dialog-dismiss>Cancel</button>
+                    <button dialog-confirm autofocus>Accept</button>
                 </div>
-            </template>
-        </dom-repeat>
+            </paper-dialog>
+            <dom-repeat items="{{data}}" as="post">
+                <template>
+                    <!-- 原則上需要在沒有任何Style的情況下能閱讀的最簡單內容 -->
+
+                    <board-card index$="[[index]]"
+                                type$="[[post.type]]"
+                                post-serial="[[post.serial]]"
+                                first-post="[[post.firstPostSerialNumber]]">
+                        <!-- Title -->
+                        <dom-if if="[[post.title]]">
+                            <template><h1 slot="title">[[post.title]]</h1></template>
+                        </dom-if>
+
+                        <!-- Info -->
+                        <span slot="day">[[post.postDay]]</span>
+                        <span slot="time">[[post.postTime]]</span>
+                        <span slot="id">[[post.userId]]</span>
+                        <span slot="serial" on-tap="dialog">[[post.serialNumber]]</span>
+                        <br>
+                        <board-stick-manage-bar
+                                serial-number="[[post.serialNumber]]"
+                                post-length="[[post.postLength]]"
+                                media-type="[[post.mediaType]]"
+                                media-host="[[post.mediaHost]]">
+                        </board-stick-manage-bar>
+                        <!-- media -->
+                        <dom-if if="[[post.imgThumbnailUrl]]">
+                            <template>
+                                <a slot="img" href="" id="imageAnchor">
+                                    <img src$="[[post.imgThumbnailUrl]]" alt$="[[post.imgUrl]]">
+                                </a>
+                            </template>
+                        </dom-if>
+
+                        <!-- article -->
+                        <p slot="content">
+                            <template is="juicy-html" html="[[post.content]]"></template>
+                        </p>
+                    </board-card>
+                </template>
+            </dom-repeat>
+        </div>
     </template>
 
     <script>
@@ -99,8 +136,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     data: Object,
                 };
             }
+
             ready() {
                 super.ready();
+            }
+            dialog(e) {
+                this.shadowRoot.querySelector('#dialog h2').innerText = e.target.innerText;
+                this.$.dialog.open();
             }
         }
 

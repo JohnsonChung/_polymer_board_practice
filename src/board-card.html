@@ -22,21 +22,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 position: relative;
                 color: var(--board-post-text-color);
                 border: var(--board-firstpost-border);
-                background-color: var(--board-firstpost-background);
+                background-color: var(--board-firstpost-background-color);
                 max-width: 100%;
                 margin: 0 40px 5px;
                 box-sizing: border-box;
                 clear: both;
                 float: left;
             }
-            :host([index="0"]) {
+            :host([type="post"]) {
                 display: block;
                 width: calc(100% - 40px);
                 box-sizing: border-box;
             }
-            :host(:not([index="0"])) {
+            :host([type="reply"]) {
                 border: var(--board-post-border);
-                background-color: var(--board-post-background);
+                background-color: var(--board-post-background-color);
             }
 
             [name="title"]::slotted(h1) {
@@ -62,24 +62,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 padding: 5px 20px;
                 margin: 0;
                 font-size: 16px;
-                /* fix div:block strange gap */
-                margin: -18px 0 0 0;
-
-                /* These are technically the same, but use both */
-                overflow-wrap: break-word;
-                word-wrap: break-word;
-
-                -ms-word-break: break-all;
-                /* This is the dangerous one in WebKit, as it breaks things wherever */
-                word-break: break-all;
-                /* Instead use this non-standard one: */
-                word-break: break-word;
-
-                /* Adds a hyphen where the word breaks, if supported (No Blink) */
-                -ms-hyphens: auto;
-                -moz-hyphens: auto;
-                -webkit-hyphens: auto;
-                hyphens: auto;
+                @apply --break-anchor;
             }
             #info {
                 font-family: "Nova Mono";
@@ -108,11 +91,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 font-size: 12px;
                 right: 3px;
                 bottom: 0;
+                color: rgba(128,0,0,0.3);
             }
             board-user-identification {
 
             }
             #serial {
+                color: rgba(128,0,0,0.3);
             }
             #slot {
                 line-height: 0;

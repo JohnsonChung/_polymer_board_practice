@@ -1,0 +1,123 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/juicy-html/juicy-html.html">
+
+<link rel="import" href="board-data.html">
+<link rel="import" href="board-mini-card.html">
+<link rel="import" href="board-stick-manage-bar.html">
+
+<link rel="import" href="shared-styles-normalize.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="board-manage-shell">
+    <template>
+
+        <style include="shared-styles-normalize shared-styles iron-flex">
+            :host {
+                box-sizing: border-box;
+                background-color: var(--komica-background-color);
+            }
+
+            iron-list {
+                height: calc(100vh - 64px);
+                @apply --layout-vertical;
+            }
+
+            board-mini-card {
+                margin-bottom: 0;
+                font-size: 10px;
+                height: 60px;
+                border-bottom: 1px solid gray;
+            }
+
+            board-card #title {
+                font-size: 12px !important;
+                color: var(--board-global-h1-color);
+            }
+
+            board-card p {
+                font-size: 12px;
+            }
+            .is-selected {
+                outline: 1px solid red;
+            }
+
+            board-card span {
+                /*font-size: 12px;*/
+            }
+
+        </style>
+        <board-data data="{{data}}"></board-data>
+
+        <iron-list items="{{data}}">
+            <template>
+                <div class="container layout horizontal">
+                    <board-mini-card type$="[[item.type]]" trim-content class="flex">
+                        <template is="dom-if" if="[[item.imgThumbnailUrl]]">
+                            <iron-image src="[[item.imgThumbnailUrl]]" sizing="cover" height="60" width="60"></iron-image>
+                        </template>
+                        <!-- Title -->
+                        <template is="dom-if" if="[[item.title]]">
+                            <span id="title" slot="title">[[item.title]]</span>
+                        </template>
+
+                        <!-- Info -->
+                        <span slot="day">[[item.postDay]]</span>
+                        <span slot="time">[[item.postTime]]</span>
+                        <span slot="id">[[item.userId]]</span>
+                        <span slot="serial">[[item.serialNumber]]</span>
+                        <br>
+                        <board-stick-manage-bar
+                                serial-number="[[item.serialNumber]]"
+                                post-length="[[item.postLength]]"
+                                media-type="[[item.mediaType]]"
+                                media-host="[[item.mediaHost]]">
+                        </board-stick-manage-bar>
+
+                        <!-- article -->
+                        <p slot="content">
+                            <template is="juicy-html" html="[[item.content]]"></template>
+                        </p>
+                    </board-mini-card>
+                    <input type="checkbox"></input>
+                </div>
+            </template>
+        </iron-list>
+
+    </template>
+
+    <script>
+        class BoardManageShell extends Polymer.Element {
+            static get is() {
+                return 'board-manage-shell';
+            }
+
+            static get properties() {
+                return {
+                    data: Object,
+                };
+            }
+
+            ready() {
+                super.ready();
+            }
+        }
+
+
+        window.customElements.define(BoardManageShell.is, BoardManageShell);
+    </script>
+</dom-module>

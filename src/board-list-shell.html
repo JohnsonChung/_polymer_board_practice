@@ -27,82 +27,97 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <style include="shared-styles-normalize shared-styles iron-flex">
             :host {
-                @apply(--layout-vertical);
                 box-sizing: border-box;
                 background-color: var(--komica-background-color);
             }
+            #container {
+                padding-left: 40px;
+            }
             #article {
+                margin-left: -40px;
             }
-            #album {
-                @apply(--layout-horizontal);
-                @apply(--layout-wrap);
-                max-width: 100%;
-                margin-bottom: 10px;
-                margin-left: 40px;
+
+            #article::after {
+                /* clear fix */
+                content: "";
+                clear: both;
+                display: block;
             }
-            #album iron-image {
+
+            board-card {
+                margin-top: 5px;
+                margin-bottom: 0;
+                background-color: var(--board-post-background-color);
+            }
+
+            iron-image {
                 width: 60px;
                 height: 60px;
+                float: left;
             }
-            #album iron-image:first-child {
+
+            iron-image[first-post] {
+                margin-left: 40px;
             }
-            board-card  {
-                margin-bottom: 0;
-            }
-            board-card h1 {
+
+            board-card #title {
                 font-size: 15px !important;
             }
+
             board-card p {
                 font-size: 12px;
             }
+
             board-card span {
                 /*font-size: 12px;*/
             }
+
             board-card img {
                 max-height: 100px;
                 max-width: 100px;
             }
         </style>
         <board-data data="{{data}}"></board-data>
+        <div id="container">
+            <dom-repeat items="{{data}}">
+                <template>
+                    <template is="dom-if" if="[[item.isFirstPost]]">
+                        <div id="article">
+                            <board-card>
+                                <!-- Title -->
+                                <p id="title" slot="title">[[item.title]]</p>
 
-        <dom-repeat items="{{data}}" as="article" index-as="i">
-            <template>
-                <div id="article">
-                    <board-card>
-                        <!-- Title -->
-                        <template is="dom-if" if="[[section.title]]">
-                            <h1 slot="title">[[section.title]]</h1>
-                        </template>
+                                <!-- Info -->
+                                <span slot="day">[[item.postDay]]</span>
+                                <span slot="time">[[item.postTime]]</span>
+                                <span slot="id">[[item.userId]]</span>
+                                <span slot="serial">[[item.serialNumber]]</span>
+                                <br>
+                                <board-stick-manage-bar
+                                        serial-number="[[item.serialNumber]]"
+                                        post-length="[[item.postLength]]"
+                                        media-type="[[item.mediaType]]"
+                                        media-host="[[item.mediaHost]]">
+                                </board-stick-manage-bar>
 
-                        <!-- Info -->
-                        <span slot="day">[[article.0.postDay]]</span>
-                        <span slot="time">[[article.0.postTime]]</span>
-                        <span slot="id">[[article.0.userId]]</span>
-                        <span slot="serial">[[article.0.serialNumber]]</span>
-                        <br>
-                        <board-stick-manage-bar
-                                serial-number="[[article.0.serialNumber]]"
-                                post-length="[[article.0.postLength]]"
-                                media-type="[[article.0.mediaType]]"
-                                media-host="[[article.0.mediaHost]]">
-                        </board-stick-manage-bar>
-
-                        <!-- article -->
-                        <p slot="content">
-                            <template is="juicy-html" html="[[article.0.content]]"></template>
-                        </p>
-                    </board-card>
-                </div>
-
-                <div id="album" >
-                    <dom-repeat items="{{article}}" as="section" filter="_hasImgThumb">
-                        <template>
-                            <iron-image src="{{section.imgThumbnailUrl}}" alt="{{section.imgThumbnailUrl}}" sizing="cover" preload fade></iron-image>
-                        </template>
-                    </dom-repeat>
-                </div>
-            </template>
-        </dom-repeat>
+                                <!-- article -->
+                                <p slot="content">
+                                    <template is="juicy-html" html="[[item.content]]"></template>
+                                </p>
+                            </board-card>
+                        </div>
+                    </template>
+                    <template is="dom-if" if="[[item.imgThumbnailUrl]]">
+                        <iron-image
+                                src="[[item.imgThumbnailUrl]]"
+                                alt="[[item.imgThumbnailUrl]]"
+                                sizing="cover"
+                                preload
+                                fade></iron-image>
+                    </template>
+                </template>
+            </dom-repeat>
+        </div>
 
     </template>
 
@@ -116,12 +131,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 return {
                     data: Object,
                 };
-            }
-            _firstPostOnly(item, index, array) {
-                return index === 0;
-            }
-            _hasImgThumb(item, index) {
-                if(item.imgThumbnailUrl) return true;
             }
         }
 
