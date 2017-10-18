@@ -12,10 +12,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/lib/elements/dom-if.html">
 <link rel="import" href="../bower_components/polymer/lib/elements/dom-repeat.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/juicy-html/juicy-html.html">
 
-<link rel="import" href="board-data.html">
 <link rel="import" href="board-card.html">
 <link rel="import" href="board-stick-manage-bar.html">
 
@@ -57,7 +57,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             #dialog {
                 bottom: 0px;
                 min-width: 180px;
-                max-width: calc(100% - 10px);
+                max-width: 680px;
+                margin-top: 80px;
+
             }
 
             @media (max-width: 650px) {
@@ -67,21 +69,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
         </style>
 
-
-
-
-
-        <board-data dummy-data="{{data}}"></board-data>
         <div id="container">
-            <paper-dialog id="dialog">
-                <h2>Dialog Title</h2>
-                <p>Lorem iorem iorem iorem iorem iorem iorem iorem iorem iorem iorem iorem iorem iorem ipsum</p>
+            <paper-dialog id="dialog" >
+                <h2>Item edit dialog</h2>
+                <p>Selected: [[dialog.post.serialNumber]]</p>
+                <p>index: [[dialog.index]]</p>
+                <paper-dialog-scrollable>[[dialog.post.content]]</paper-dialog-scrollable>
                 <div class="buttons">
-                    <button dialog-dismiss>Cancel</button>
-                    <button dialog-confirm autofocus>Accept</button>
+                    <button dialog-dismiss on-tap="_onRemovePostItem">Remove post item.</button>
                 </div>
             </paper-dialog>
-            <dom-repeat items="{{data}}" as="post">
+            <dom-repeat items="[[data]]" as="post">
                 <template>
                     <!-- 原則上需要在沒有任何Style的情況下能閱讀的最簡單內容 -->
 
@@ -98,9 +96,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <span slot="day">[[post.postDay]]</span>
                         <span slot="time">[[post.postTime]]</span>
                         <span slot="id">[[post.userId]]</span>
-                        <span slot="serial" on-tap="dialog">[[post.serialNumber]]</span>
+                        <span slot="serial">[[post.serialNumber]]</span>
                         <br>
-                        <board-stick-manage-bar
+                        <board-stick-manage-bar  on-tap="_onOpenDialog"
                                 serial-number="[[post.serialNumber]]"
                                 post-length="[[post.postLength]]"
                                 media-type="[[post.mediaType]]"
@@ -140,9 +138,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             ready() {
                 super.ready();
             }
-            dialog(e) {
-                this.shadowRoot.querySelector('#dialog h2').innerText = e.target.innerText;
+            _onOpenDialog(e) {
+                console.log(e.model);
+                this.dialog = e.model;
                 this.$.dialog.open();
+            }
+            _onRemovePostItem(e) {
+                console.log(this.dialog.serialNumber);
+                this.dispatchEvent(new CustomEvent('remove-post-item', {
+                    bubbles: true, composed: true, detail: {
+                        serialNumber: this.dialog.post.serialNumber,
+                        index: this.dialog.index,
+                    },
+                }));
             }
         }
 

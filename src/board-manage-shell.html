@@ -10,13 +10,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/polymer/lib/elements/dom-if.html">
-<link rel="import" href="../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../bower_components/juicy-html/juicy-html.html">
 
-<link rel="import" href="board-data.html">
 <link rel="import" href="board-mini-card.html">
 <link rel="import" href="board-stick-manage-bar.html">
 
@@ -33,7 +32,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             iron-list {
-                height: calc(100vh - 64px);
+                height: calc(100vh - 128px);
                 @apply --layout-vertical;
             }
 
@@ -41,7 +40,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 margin-bottom: 0;
                 font-size: 10px;
                 height: 60px;
-                border-bottom: 1px solid gray;
             }
 
             board-card #title {
@@ -52,6 +50,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             board-card p {
                 font-size: 12px;
             }
+
             .is-selected {
                 outline: 1px solid red;
             }
@@ -59,16 +58,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             board-card span {
                 /*font-size: 12px;*/
             }
+            .container {
+                border-bottom: 1px solid gray;
+            }
+            .container[selected] {
+                box-sizing: border-box;
+                border-left: 5px solid #ff1400;
+            }
 
         </style>
-        <board-data data="{{data}}"></board-data>
 
-        <iron-list items="{{data}}">
+        <app-toolbar>
+            <button on-tap="_toggleMultiSelection">多選: [[multiSelection]]</button>
+            <button>動作</button>
+            <label for="search">過濾</label>
+            <input type="search" id="search" placeholder="Search Content..." value="{{searchText::change}}">
+        </app-toolbar>
+
+        <iron-list
+                items="{{data}}"
+                selected-items="{{selectedItems}}"
+                selection-enabled
+                multi-selection="[[multiSelection]]"
+                scroll-target="document">
             <template>
-                <div class="container layout horizontal">
+                <div class="container layout horizontal" tabindex$="[[tabIndex]]" selected$="[[selected]]">
                     <board-mini-card type$="[[item.type]]" trim-content class="flex">
                         <template is="dom-if" if="[[item.imgThumbnailUrl]]">
-                            <iron-image src="[[item.imgThumbnailUrl]]" sizing="cover" height="60" width="60"></iron-image>
+                            <iron-image src="[[item.imgThumbnailUrl]]" sizing="cover" height="60"
+                                        width="60"></iron-image>
                         </template>
                         <!-- Title -->
                         <template is="dom-if" if="[[item.title]]">
@@ -93,7 +111,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             <template is="juicy-html" html="[[item.content]]"></template>
                         </p>
                     </board-mini-card>
-                    <input type="checkbox"></input>
+                    <button on-tap="_removePost"> X</button>
                 </div>
             </template>
         </iron-list>
@@ -109,11 +127,44 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             static get properties() {
                 return {
                     data: Object,
+                    multiSelection: {
+                        type: Boolean,
+                        value() {
+                            return false
+                        },
+                    },
+                    searchText: {
+                        type: String,
+                        observer: '_onSearchChanged',
+                    },
                 };
             }
 
             ready() {
                 super.ready();
+            }
+
+            /**
+             * Event
+             */
+            _onSearchChanged(value, oldValue) {
+                /* Through search library return Array.filter string */
+            }
+            _removePost(e) {
+                // This event will be handled by shop-app.
+                let item = e.model.item;
+                this.dispatchEvent(new CustomEvent('remove-post-item', {
+                    bubbles: true, composed: true, detail: {
+                        item: item,
+                        isFirstPost: item.isFirstPost ? item.isFirstPost : false,
+                        serialNumber: item.serialNumber,
+                        index: e.model.index,
+                    },
+                }));
+
+            }
+            _toggleMultiSelection(e){
+                this.multiSelection = this.multiSelection ? false : true;
             }
         }
 

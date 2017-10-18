@@ -21,7 +21,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="shared-styles-normalize.html">
 <link rel="import" href="shared-styles.html">
 
-<dom-module id="board-list-shell">
+<dom-module id="board-album-shell">
     <template>
 
         <style include="shared-styles-normalize shared-styles iron-flex">
@@ -75,54 +75,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 max-height: 100px;
                 max-width: 100px;
             }
+            #preview {
+                height: 100%;
+                width: 100%;
+
+                position: fixed;
+                right: 0;
+                height: calc(100vh - 80px);
+                width: 480px;
+                overflow-y: scroll;
+                border: 1px dashed red;
+            }
         </style>
+
         <div id="container">
-            <dom-repeat items="{{data}}">
-                <template>
-                    <template is="dom-if" if="[[item.isFirstPost]]">
-                        <div id="article">
-                            <board-card>
-                                <!-- Title -->
-                                <span id="title" slot="title">[[item.title]]</span>
 
-                                <!-- Info -->
-                                <span slot="day">[[item.postDay]]</span>
-                                <span slot="time">[[item.postTime]]</span>
-                                <span slot="id">[[item.userId]]</span>
-                                <span slot="serial">[[item.serialNumber]]</span>
-                                <br>
-                                <board-stick-manage-bar
-                                        serial-number="[[item.serialNumber]]"
-                                        post-length="[[item.postLength]]"
-                                        media-type="[[item.mediaType]]"
-                                        media-host="[[item.mediaHost]]">
-                                </board-stick-manage-bar>
-
-                                <!-- article -->
-                                <p slot="content">
-                                    <template is="juicy-html" html="[[item.content]]"></template>
-                                </p>
-                            </board-card>
-                        </div>
-                    </template>
-                    <template is="dom-if" if="[[item.imgThumbnailUrl]]">
-                        <iron-image
-                                src="[[item.imgThumbnailUrl]]"
-                                alt="[[item.imgThumbnailUrl]]"
-                                sizing="cover"
-                                preload
-                                fade></iron-image>
-                    </template>
-                </template>
-            </dom-repeat>
         </div>
 
     </template>
 
     <script>
-        class BoardListShell extends Polymer.Element {
+        class BoardAlbumShell extends Polymer.Element {
             static get is() {
-                return 'board-list-shell';
+                return 'board-album-shell';
             }
 
             static get properties() {
@@ -131,8 +106,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 };
             }
         }
-
-
-        window.customElements.define(BoardListShell.is, BoardListShell);
+        window.customElements.define(BoardAlbumShell.is, BoardAlbumShell);
     </script>
 </dom-module>

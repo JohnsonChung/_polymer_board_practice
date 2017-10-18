@@ -24,6 +24,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         ></iron-ajax>
     </template>
     <script>
+        let dummyBoardData =[
+            {
+                boardName: '綜合二',
+                boardPostNumber: '124234',
+                boardType: '綜合討論',
+                boardAdminPassword: '12345678',
+            },
+            {
+                boardName: '短片二',
+                boardPostNumber: '65087',
+                boardType: '綜合討論',
+                boardAdminPassword: '87654321',
+            },
+            {
+                boardName: '廢怯少女',
+                boardPostNumber: '42536',
+                boardType: '動畫',
+                boardAdminPassword: '00000000',
+            },
+        ];
         let dummyData =
             [{
                 imgUrl: 'http://i.imgur.com/kgUk3dM.jpg',
@@ -155,6 +175,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         notify: true,
                         value() {
                             return dummyData;
+                        },
+                    },
+                    dummyBoardData: {
+                        type: Array,
+                        notify: true,
+                        value() {
+                            return dummyBoardData;
                         },
                     },
                     previousData: {
