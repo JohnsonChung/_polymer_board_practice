@@ -17,6 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/juicy-html/juicy-html.html">
 
 <link rel="import" href="board-card.html">
+<link rel="import" href="board-manage-event.html">
 <link rel="import" href="board-stick-manage-bar.html">
 
 <link rel="import" href="shared-styles-normalize.html">
@@ -70,52 +71,43 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </style>
 
         <div id="container">
-            <paper-dialog id="dialog" >
-                <h2>Item edit dialog</h2>
-                <p>Selected: [[dialog.post.serialNumber]]</p>
-                <p>index: [[dialog.index]]</p>
-                <paper-dialog-scrollable>[[dialog.post.content]]</paper-dialog-scrollable>
-                <div class="buttons">
-                    <button dialog-dismiss on-tap="_onRemovePostItem">Remove post item.</button>
-                </div>
-            </paper-dialog>
-            <dom-repeat items="[[data]]" as="post">
+            <dom-repeat items="[[data]]">
                 <template>
                     <!-- 原則上需要在沒有任何Style的情況下能閱讀的最簡單內容 -->
 
                     <board-card index$="[[index]]"
-                                type$="[[post.type]]"
-                                post-serial="[[post.serial]]"
-                                first-post="[[post.firstPostSerialNumber]]">
+                                type$="[[item.type]]"
+                                post-serial="[[item.serial]]"
+                                first-post="[[item.firstPostSerialNumber]]">
                         <!-- Title -->
-                        <dom-if if="[[post.title]]">
-                            <template><h1 slot="title">[[post.title]]</h1></template>
+                        <dom-if if="[[item.title]]">
+                            <template><h1 slot="title">[[item.title]]</h1></template>
                         </dom-if>
 
                         <!-- Info -->
-                        <span slot="day">[[post.postDay]]</span>
-                        <span slot="time">[[post.postTime]]</span>
-                        <span slot="id">[[post.userId]]</span>
-                        <span slot="serial">[[post.serialNumber]]</span>
+                        <span slot="day">[[item.postDay]]</span>
+                        <span slot="time">[[item.postTime]]</span>
+                        <span slot="id">[[item.userId]]</span>
+                        <span slot="serial">[[item.serialNumber]]</span>
                         <br>
-                        <board-stick-manage-bar  on-tap="_onOpenDialog"
-                                serial-number="[[post.serialNumber]]"
-                                post-length="[[post.postLength]]"
-                                media-type="[[post.mediaType]]"
-                                media-host="[[post.mediaHost]]">
+                        <board-stick-manage-bar  on-tap="_onOpenPostModal"
+                                serial-number="[[item.serialNumber]]"
+                                post-length="[[item.postLength]]"
+                                media-type="[[item.mediaType]]"
+                                media-host="[[item.mediaHost]]">
                         </board-stick-manage-bar>
                         <!-- media -->
-                        <dom-if if="[[post.imgThumbnailUrl]]">
+                        <dom-if if="[[item.imgThumbnailUrl]]">
                             <template>
                                 <a slot="img" href="" id="imageAnchor">
-                                    <img src$="[[post.imgThumbnailUrl]]" alt$="[[post.imgUrl]]">
+                                    <img src$="[[item.imgThumbnailUrl]]" alt$="[[item.imgUrl]]">
                                 </a>
                             </template>
                         </dom-if>
 
                         <!-- article -->
                         <p slot="content">
-                            <template is="juicy-html" html="[[post.content]]"></template>
+                            <template is="juicy-html" html="[[item.content]]"></template>
                         </p>
                     </board-card>
                 </template>
@@ -124,7 +116,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
 
     <script>
-        class BoardSectionShell extends Polymer.Element {
+        class BoardSectionShell extends BoardManageEvent(Polymer.Element) {
             static get is() {
                 return 'board-section-shell';
             }
@@ -137,20 +129,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             ready() {
                 super.ready();
-            }
-            _onOpenDialog(e) {
-                console.log(e.model);
-                this.dialog = e.model;
-                this.$.dialog.open();
-            }
-            _onRemovePostItem(e) {
-                console.log(this.dialog.serialNumber);
-                this.dispatchEvent(new CustomEvent('remove-post-item', {
-                    bubbles: true, composed: true, detail: {
-                        serialNumber: this.dialog.post.serialNumber,
-                        index: this.dialog.index,
-                    },
-                }));
             }
         }
 

@@ -1,0 +1,100 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+
+<dom-module id="board-post-modal">
+  <template>
+    <style include="paper-dialog-shared-styles">
+      :host {
+        display: block;
+        margin: 24px 40px;
+
+        background: var(--paper-dialog-background-color, var(--primary-background-color));
+        color: var(--paper-dialog-color, var(--primary-text-color));
+
+        @apply --paper-font-body1;
+        @apply --shadow-elevation-16dp;
+        @apply --paper-dialog;
+      }
+
+      * {
+        margin-top: 20px;
+        padding: 0 24px;
+      }
+
+      .no-padding {
+        padding: 0;
+      }
+
+      /* In 1.x, this selector was `:host > ::content h2`. In 2.x <slot> allows
+      to only select only direct children, which increases the weight of this
+      selector, so we have to move it before first-child/last-child selectors */
+      h2 {
+        position: relative;
+        margin: 0;
+        @apply --paper-font-title;
+        @apply --paper-dialog-title;
+      }
+
+      *:first-child) {
+        margin-top: 24px;
+      }
+
+      *:last-child {
+        margin-bottom: 24px;
+      }
+
+      .buttons {
+        position: relative;
+        padding: 8px 8px 8px 24px;
+        margin: 0;
+
+        color: var(--paper-dialog-button-color, var(--primary-color));
+
+        @apply --layout-horizontal;
+        @apply --layout-end-justified;
+      }
+    </style>
+
+    <h2>Item edit dialog</h2>
+    <p>Selected: [[serialNumber]]</p>
+    <p>index: [[index]]</p>
+    <paper-dialog-scrollable>[[content]]</paper-dialog-scrollable>
+    <div class="buttons">
+      <button dialog-dismiss on-tap="_onRemovePostItem">Remove post item.</button>
+    </div>
+    
+  </template>
+
+  <script>
+    class BoardPostModal extends customElements.get('paper-dialog') {
+      static get is() { return 'board-post-modal'; }
+
+
+        _onRemovePostItem(e) {
+            let model = this.model;
+            this.dispatchEvent(new CustomEvent('remove-post-item', {
+                bubbles: true,
+                composed: true,
+                detail: {
+                    isFirstPost: model.item.isFirstPost ? model.item.isFirstPost : false,
+                    serialNumber: model.item.serialNumber,
+                    index: model.index,
+                }
+            }));
+        }
+
+    }
+
+    window.customElements.define(BoardPostModal.is, BoardPostModal);
+  </script>
+</dom-module>

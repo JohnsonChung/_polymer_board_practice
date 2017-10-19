@@ -17,6 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/juicy-html/juicy-html.html">
 
 <link rel="import" href="board-mini-card.html">
+<link rel="import" href="board-manage-event.html">
 <link rel="import" href="board-stick-manage-bar.html">
 
 <link rel="import" href="shared-styles-normalize.html">
@@ -111,7 +112,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             <template is="juicy-html" html="[[item.content]]"></template>
                         </p>
                     </board-mini-card>
-                    <button on-tap="_removePost"> X</button>
+                    <button on-tap="_onRemovePostItem"> X</button>
                 </div>
             </template>
         </iron-list>
@@ -119,7 +120,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
 
     <script>
-        class BoardManageShell extends Polymer.Element {
+        class BoardManageShell extends BoardManageEvent(Polymer.Element) {
             static get is() {
                 return 'board-manage-shell';
             }
@@ -149,19 +150,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
              */
             _onSearchChanged(value, oldValue) {
                 /* Through search library return Array.filter string */
-            }
-            _removePost(e) {
-                // This event will be handled by shop-app.
-                let item = e.model.item;
-                this.dispatchEvent(new CustomEvent('remove-post-item', {
-                    bubbles: true, composed: true, detail: {
-                        item: item,
-                        isFirstPost: item.isFirstPost ? item.isFirstPost : false,
-                        serialNumber: item.serialNumber,
-                        index: e.model.index,
-                    },
-                }));
-
             }
             _toggleMultiSelection(e){
                 this.multiSelection = this.multiSelection ? false : true;

@@ -24,6 +24,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="my-icons.html">
 <link rel="import" href="board-data.html">
 <link rel="import" href="board-section-shell.html">
+<link rel="import" href="board-post-modal.html">
 
 <link rel="lazy-import" href="board-view404.html">
 <link rel="lazy-import" href="board-list-shell.html">
@@ -82,7 +83,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 tail="{{subroute}}">
         </app-route>
 
-        <board-data id="boardData" data="{{boardData}}"></board-data>
+        <board-data id="boardData" dummy-data="{{boardData}}"></board-data>
 
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
@@ -123,6 +124,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
+
+        <board-post-modal id="postModal" ></board-post-modal>
+
     </template>
 
     <script>
@@ -158,7 +162,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.removeAttribute('unresolved');
                 // listen for custom events
                 this.addEventListener('add-post-item', (e) => this._onAddPostItem(e));
-                this.addEventListener('remove-post-item', (e) => this._onRmovePostItem(e));
+                this.addEventListener('remove-post-item', (e) => this._onRemovePostItem(e));
+                this.addEventListener('open-post-modal', (e) => this._onOpenPostModal(e));
                 // listen for online/offline
                 Polymer.RenderStatus.afterNextRender(this, () => {
                     window.addEventListener('online', (e) => this._notifyNetworkStatus(e));
@@ -210,8 +215,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             }
 
-            _onRmovePostItem(e) {
-
+            _onRemovePostItem(e) {
                 let target = this.boardData.find(x=>{
                     return x.serialNumber === e.detail.serialNumber;
                 });
@@ -221,6 +225,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             _onAddPostItem(e) {
 
 
+            }
+
+            _onOpenPostModal(e) {
+                let modal = this.$.postModal;
+                modal.model = e.detail.model;
+                modal.open();
             }
 
         }

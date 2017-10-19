@@ -16,6 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/juicy-html/juicy-html.html">
 
 <link rel="import" href="board-card.html">
+<link rel="import" href="board-manage-event.html">
 <link rel="import" href="board-stick-manage-bar.html">
 
 <link rel="import" href="shared-styles-normalize.html">
@@ -92,6 +93,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <span slot="serial">[[item.serialNumber]]</span>
                                 <br>
                                 <board-stick-manage-bar
+                                        on-tap="_onOpenPostModal"
                                         serial-number="[[item.serialNumber]]"
                                         post-length="[[item.postLength]]"
                                         media-type="[[item.mediaType]]"
@@ -120,7 +122,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
 
     <script>
-        class BoardListShell extends Polymer.Element {
+        class BoardListShell extends BoardManageEvent(Polymer.Element) {
             static get is() {
                 return 'board-list-shell';
             }
